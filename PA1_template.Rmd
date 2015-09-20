@@ -1,25 +1,92 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
+title: "PA1_template"
+author: "Lucas Horiye"
+date: "Tuesday, September 15, 2015"
+output: html_document
 ---
 
+# Assignment
 
-## Loading and preprocessing the data
+## Loading and preprocessing data
 
+Loading package reading file and transforming data
 
+```{r results="hide", message=FALSE, warning=FALSE}
+library(dplyr)
+```
+
+```{r echo=TRUE}
+file <- read.csv('activity.csv')
+activity_tbl <- tbl_df(file)
+```
 
 ## What is mean total number of steps taken per day?
 
+Total number of steps taken per day
+```{r echo=TRUE}
+steps_day <- activity_tbl %>% group_by(date) %>% summarize(steps_sum =sum(steps, na.rm=TRUE))
+```
+Histogram of the total number of steps taken each day
+```{r echo=TRUE}
+hist(steps_day$steps_sum, xlab="total steps per day", main="Histogram of total steps per day")
+```
 
+Mean and Median
+```{r echo=TRUE}
+mean(steps_day$steps_sum)
+median(steps_day$steps_sum)
+```
 
 ## What is the average daily activity pattern?
 
+Overall plot
+```{r echo=TRUE}
+steps_interval_mean <- activity_tbl %>% group_by(interval) %>% summarize(steps_interval_mean =mean(steps, na.rm=TRUE))
+with(steps_interval_mean, plot(interval, steps_interval_mean, type="l"))
+```
 
+A little bit closer (the answer is 835)
+```{r echo=TRUE}
+with(steps_interval_mean, plot(interval, steps_interval_mean, type="l", xlim=c(832, 838)))
+```
 
 ## Imputing missing values
 
+Total number of missing values
+```{r echo=TRUE}
+nrow(activity_tbl %>% filter(is.na(steps)))
+```
 
+Filling dataset
+```{r echo=TRUE}
+activity_tbl_filled <- activity_tbl %>% inner_join(steps_interval_mean)
+activity_tbl_filled <- activity_tbl_filled %>% mutate(steps = ifelse(is.na(steps), steps_interval_mean, steps))
+```
+
+Calculating Mean and Median
+```{r echo=TRUE}
+steps_day_filled <- activity_tbl_filled %>% group_by(date) %>% summarize(steps_sum =sum(steps))
+
+mean(steps_day_filled$steps_sum)
+median(steps_day_filled$steps_sum)
+
+```
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+```{r results="hide", message=FALSE, warning=FALSE}
+Sys.setlocale("LC_ALL","English")
+```
+
+```{r echo=TRUE}
+activity_tbl_filled <- mutate(activity_tbl_filled, steps_interval_mean=NULL)
+activity_tbl_filled <- mutate( activity_tbl_filled, wday =  ifelse 
+( grepl ('Saturday|Sunday', weekdays(as.Date(date)) ), 'weekend', 'weekday'))
+steps_wday <- activity_tbl_filled %>% group_by(interval, wday) %>% summarize(steps_mean = mean(steps))
+```
+```{r results="hide", message=FALSE, warning=FALSE}
+library(lattice)
+```
+```{r echo=TRUE}
+xyplot(data=steps_wday, steps_mean ~ interval | wday, type="l", layout=c(1, 2), main="", ylab="Number of steps", xlab="Interval")
+```
