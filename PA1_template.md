@@ -87,6 +87,7 @@ nrow(activity_tbl %>% filter(is.na(steps)))
 ```
 
 Filling dataset
+(STRATEGY: Using mean for that 5-minute-interval)
 
 ```r
 activity_tbl_filled <- activity_tbl %>% inner_join(steps_interval_mean)

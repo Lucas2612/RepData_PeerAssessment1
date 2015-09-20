@@ -269,7 +269,8 @@ with(steps_interval_mean, plot(interval, steps_interval_mean, type=&quot;l&quot;
 <pre><code>## [1] 2304
 </code></pre>
 
-<p>Filling dataset</p>
+<p>Filling dataset
+(STRATEGY: Using mean for that 5-minute-interval)</p>
 
 <pre><code class="r">activity_tbl_filled &lt;- activity_tbl %&gt;% inner_join(steps_interval_mean)
 </code></pre>
