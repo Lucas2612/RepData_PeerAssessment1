@@ -1,8 +1,10 @@
 ---
 title: "PA1_template"
 author: "Lucas Horiye"
-date: "Tuesday, September 15, 2015"
-output: html_document
+date: "Friday, January 8, 2015"
+output: 
+  html_document:
+    keep_md: true
 ---
 
 # Assignment
@@ -62,12 +64,17 @@ Filling dataset
 ```{r echo=TRUE}
 activity_tbl_filled <- activity_tbl %>% inner_join(steps_interval_mean)
 activity_tbl_filled <- activity_tbl_filled %>% mutate(steps = ifelse(is.na(steps), steps_interval_mean, steps))
+steps_day_filled <- activity_tbl_filled %>% group_by(date) %>% summarize(steps_sum =sum(steps))
+```
+
+Histogram of total steps per day (filled)
+```{r echo=TRUE}
+hist(steps_day_filled$steps_sum, xlab="total steps per day filled", main="Histogram of total steps per day (filled)")
+
 ```
 
 Calculating Mean and Median
 ```{r echo=TRUE}
-steps_day_filled <- activity_tbl_filled %>% group_by(date) %>% summarize(steps_sum =sum(steps))
-
 mean(steps_day_filled$steps_sum)
 median(steps_day_filled$steps_sum)
 

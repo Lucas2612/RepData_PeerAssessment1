@@ -1,9 +1,6 @@
----
-title: "PA1_template"
-author: "Lucas Horiye"
-date: "Tuesday, September 15, 2015"
-output: html_document
----
+# PA1_template
+Lucas Horiye  
+Friday, January 8, 2015  
 
 # Assignment
 
@@ -35,7 +32,7 @@ Histogram of the total number of steps taken each day
 hist(steps_day$steps_sum, xlab="total steps per day", main="Histogram of total steps per day")
 ```
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)\
 
 Mean and Median
 
@@ -64,7 +61,7 @@ steps_interval_mean <- activity_tbl %>% group_by(interval) %>% summarize(steps_i
 with(steps_interval_mean, plot(interval, steps_interval_mean, type="l"))
 ```
 
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)\
 
 A little bit closer (the answer is 835)
 
@@ -72,7 +69,7 @@ A little bit closer (the answer is 835)
 with(steps_interval_mean, plot(interval, steps_interval_mean, type="l", xlim=c(832, 838)))
 ```
 
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-7-1.png)\
 
 ## Imputing missing values
 
@@ -99,13 +96,20 @@ activity_tbl_filled <- activity_tbl %>% inner_join(steps_interval_mean)
 
 ```r
 activity_tbl_filled <- activity_tbl_filled %>% mutate(steps = ifelse(is.na(steps), steps_interval_mean, steps))
+steps_day_filled <- activity_tbl_filled %>% group_by(date) %>% summarize(steps_sum =sum(steps))
 ```
+
+Histogram of total steps per day (filled)
+
+```r
+hist(steps_day_filled$steps_sum, xlab="total steps per day filled", main="Histogram of total steps per day (filled)")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-10-1.png)\
 
 Calculating Mean and Median
 
 ```r
-steps_day_filled <- activity_tbl_filled %>% group_by(date) %>% summarize(steps_sum =sum(steps))
-
 mean(steps_day_filled$steps_sum)
 ```
 
@@ -144,4 +148,4 @@ library(lattice)
 xyplot(data=steps_wday, steps_mean ~ interval | wday, type="l", layout=c(1, 2), main="", ylab="Number of steps", xlab="Interval")
 ```
 
-![plot of chunk unnamed-chunk-14](figure/unnamed-chunk-14-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-15-1.png)\
